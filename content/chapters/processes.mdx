@@ -1,0 +1,105 @@
+<Section id="what" n="01" kicker="The most basic abstraction" title="Program vs process">
+
+A **program** is a lifeless thing: a file on disk full of instructions and some static data, waiting. A **process** is what the OS makes out of it: a *running program*, with its own memory, its own registers and its own open files. Run the same program twice and you get two processes.
+
+The process is the most fundamental abstraction an OS provides. When you have a browser, a music player, a terminal and a dozen background services open, each is a process. Every one of them acts as if it had the CPU to itself.
+
+<Callout kind="key">
+There are only a few physical CPUs, but we want to run hundreds of processes. How can the OS give the illusion of a nearly endless supply of CPUs?
+</Callout>
+
+The answer, which you saw in Chapter 1, is **time sharing**: run one process for a little while, stop it, run another, and so on. The cost is performance: each process runs a bit slower when the CPU is shared. Its counterpart is **space sharing**, where a resource is divided up among users (like disk blocks given to different files).
+
+To time-share well the OS needs two kinds of machinery:
+
+- **Mechanisms**: the low-level *how*, like the **context switch** that stops one process and resumes another.
+- **Policies**: the high-level *which*, like the **scheduling policy** that decides which process runs next, using history, workload and goals.
+
+Keeping these separate is a design principle you'll meet again and again: you can change *which* process runs without rewriting *how* a switch happens.
+
+</Section>
+
+<Section id="machine-state" n="02" kicker="What makes up a process" title="Machine state">
+
+To understand a process, ask: what parts of the machine can it **read or change** while it runs? That's its *machine state*:
+
+- **Memory.** Its instructions and the data it reads and writes live in memory. The memory a process can address is its **address space**.
+- **Registers.** Many instructions read or update registers. A few are special: the **program counter** (PC, also called the instruction pointer) says which instruction runs next; the **stack pointer** and **frame pointer** manage the stack of function parameters, local variables and return addresses.
+- **I/O information.** Processes often have files open. The list of **open files** is part of the process too.
+
+Save all of that, and you can pause a process. Restore it, and the process carries on as if nothing happened. That's exactly what a context switch does.
+
+</Section>
+
+<Section id="api" n="03" kicker="What the OS lets you do" title="The process API">
+
+Every modern OS offers some form of these operations on processes. The next chapter shows the real UNIX calls in detail.
+
+<InfoCards set="process-api" />
+
+</Section>
+
+<Section id="creation" n="04" kicker="How a program comes alive" title="Process creation">
+
+Before `main()` can run, the OS has a lot of setup to do. Step through it:
+
+<Demo id="load" />
+
+In order, the OS:
+
+1. **Loads the code and static data** from the executable on disk into the process's address space. Early systems loaded everything *eagerly* before running. Modern OSes load *lazily*, fetching pieces only as the program touches them (you'll see how in *Paging* and *Swapping*).
+2. **Allocates the stack** and fills in `main`'s arguments, `argc` and `argv`.
+3. **Sets up a heap** for memory the program requests with `malloc()` and returns with `free()`. It starts small and grows as needed.
+4. **Prepares I/O**: on UNIX every process starts with three open file descriptors, for standard input, output and error.
+5. **Jumps to the entry point**, `main()`, handing the CPU to the new process.
+
+<Callout kind="note" title="Where things live">
+**Code** and **static data** come from the executable. **Locals** go on the **stack**, which grows and shrinks with function calls. Anything from `malloc()` goes on the **heap**. Keep this picture in mind. It is the address space you'll virtualize later in the course.
+</Callout>
+
+</Section>
+
+<Section id="states" n="05" kicker="Running, ready, blocked" title="Process states">
+
+At any moment a process is in one of a few **states**:
+
+- **Running**: it's on a CPU, executing instructions.
+- **Ready**: it could run, but the OS has chosen to run someone else for now.
+- **Blocked**: it's waiting for something, typically I/O. When a process starts a disk read, it can't make progress until the data arrives, so the OS can let someone else use the CPU.
+
+The OS moves processes between these states. Being moved from ready to running is called being **scheduled**, and the reverse is being **descheduled**. Play with the demo, then turn off **Switch on I/O** to see why the blocked state matters:
+
+<Demo id="states" />
+
+Even in this tiny example the OS faces real **policy** decisions. When P0 starts its I/O, should the OS run P1? (Yes, otherwise the CPU idles.) When P0's I/O finishes, should it switch back right away, or let P1 keep going? These questions are what **schedulers** are about, and they get a whole chapter.
+
+</Section>
+
+<Section id="data" n="06" kicker="How the OS keeps track" title="Data structures">
+
+The OS is a program too, and it keeps the information it needs in data structures. The key one is a **process list** (or task list) with an entry for each process, often called a **process control block** (PCB). Here is the real `struct proc` from **xv6**, a small teaching OS based on UNIX:
+
+<Demo id="pcb" />
+
+Two details stand out:
+
+- The **register context** holds a stopped process's registers. When the OS stops a process, it saves the registers here. When it resumes it, it restores them. This is the heart of a **context switch**.
+- There are more states than running, ready and blocked. A process is briefly in an **initial** state while it's being created (`EMBRYO` in xv6). After it exits it enters a **final** state, often called **zombie**: it's finished, but its entry sticks around so its **parent** can collect the exit status with `wait()`. Only then does the OS clean it up completely.
+
+<Callout kind="tip">
+On Linux, run `ps aux` or `top` to see the real process list, with each process's PID, state, memory use and command. A `Z` in the state column is a zombie.
+</Callout>
+
+</Section>
+
+<Section id="recap" n="07" kicker="Check yourself" title="Recap & quiz">
+
+- A **process** is a running program: its address space, registers (PC, stack pointer…) and open files.
+- The OS virtualizes the CPU with **time sharing**, built from **mechanisms** (context switch) and **policies** (scheduling).
+- To create a process the OS loads **code and data**, sets up the **stack** and **heap**, opens **stdin, stdout and stderr**, and jumps to `main`.
+- Processes move between **running**, **ready** and **blocked**. Running others while one is blocked keeps the CPU busy.
+- The OS tracks each process in a **PCB** inside a process list; the saved **register context** is what makes resuming possible.
+
+<Quiz chapter="processes" />
+
+</Section>

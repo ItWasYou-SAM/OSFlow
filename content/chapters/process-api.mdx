@@ -1,0 +1,120 @@
+<Section id="fork" n="01" kicker="Creating a process" title="The fork() system call">
+
+UNIX creates processes in an unusual way: with a pair of system calls, `fork()` and `exec()`, plus `wait()` for a parent that wants to know when its child is done. We'll take them one at a time.
+
+<Callout kind="key">
+What interface should the OS give for creating and controlling processes, so that it's powerful, easy to use and fast?
+</Callout>
+
+`fork()` creates a new process that is an almost exact **copy** of the one that called it. In the demo, the gutter markers show where each process is: **P** for the parent and **C** for the child.
+
+<Demo id="fork" />
+
+Three things are odd about `fork()` the first time you see it:
+
+- The child does **not** start at `main()`. It comes to life as if it had just called `fork()` itself.
+- The child gets its **own copy** of the address space, registers and PC. Changing a variable in one process doesn't affect the other.
+- `fork()` **returns twice**: once in the parent, with the child's **PID**, and once in the child, with **0**. That return value is the only way the two copies can tell who they are.
+
+Now switch **Runs first** between *Parent* and *Child*. The output order changes. After `fork()` there are two ready processes, and the **CPU scheduler** decides which one runs first. We can't know in advance, so the program is **nondeterministic**. Nondeterminism causes some of the trickiest bugs, especially in concurrent programs.
+
+</Section>
+
+<Section id="wait" n="02" kicker="Waiting for a child" title="The wait() system call">
+
+Often a parent wants to wait until its child finishes. That's what `wait()` (or its more flexible cousin `waitpid()`) is for.
+
+<Demo id="wait" />
+
+If the parent gets to `wait()` first, it **blocks** until the child exits. If the child finishes first, it sits as a **zombie** until the parent calls `wait()`, which then returns immediately. Either way the child's line always comes before the parent's. `wait()` has made the output **deterministic**.
+
+<Callout kind="note" title="Reaping">
+`wait()` returns the PID of the child that ended and can report its exit status. It also lets the OS **reap** the zombie, freeing its last bit of bookkeeping. A parent that never waits leaves zombies behind until it exits itself; then `init` adopts and reaps them.
+</Callout>
+
+</Section>
+
+<Section id="exec" n="03" kicker="Running a different program" title="The exec() system call">
+
+`fork()` only gives you more copies of the same program. To run a **different** program, use `exec()`. It comes in several variants: `execl`, `execlp`, `execle`, `execv`, `execvp` and `execvpe`, which differ in how you pass the arguments and environment.
+
+<Demo id="exec" />
+
+Given a program name and arguments, `exec()`:
+
+1. Loads that program's code and static data **over** the current process's,
+2. Re-initializes the heap and stack, and
+3. Starts running the new program from its `main()`, with your arguments as its `argv`.
+
+It does **not** create a new process: the PID stays the same, and so do the open files. It *transforms* the running process into another program. That's also why a successful `exec()` **never returns**: the code that called it is gone.
+
+</Section>
+
+<Section id="shell" n="04" kicker="Why split create and run?" title="Why? The shell">
+
+Why not have a single "create a process running X" call? Because the gap **between** `fork()` and `exec()` turns out to be incredibly useful. A shell like `bash` is just a user program that loops forever:
+
+1. Print a prompt and read a command.
+2. `fork()` a child.
+3. In the child, `exec()` the command.
+4. In the parent, `wait()` for the child, then go back to step 1.
+
+Because the child runs a little of the shell's own code before calling `exec()`, the shell can **change the child's environment** first. That's how redirection works. When you type `wc p4.c > p4.output`, the shell closes standard output in the child and opens the file instead. The demo shows the exact trick:
+
+<Demo id="redirect" />
+
+The key rule: when you `open()` a file, UNIX hands you the **lowest free file descriptor**. Close fd 1 first, and the new file *becomes* standard output. Then `exec()` keeps the open files, and `wc` writes to fd 1 as usual without knowing anything changed.
+
+</Section>
+
+<Section id="pipes" n="05" kicker="Connecting processes" title="Pipes">
+
+Pipes use the same idea. The `pipe()` system call creates a kernel buffer with two ends: whatever is written into one end can be read from the other. Before calling `exec()`, the shell connects one process's **standard output** to the write end and the next process's **standard input** to the read end. So this:
+
+```
+grep -o foo file | wc -l
+```
+
+counts how many times `foo` appears. `grep` and `wc` have no idea they're talking to each other; each just uses fds 0 and 1. Long chains of small tools connected by pipes are the UNIX way.
+
+<Callout kind="tip">
+Read the manual: `man 2 fork`, `man 2 wait`, `man 3 exec`, `man 2 pipe`. Section 2 of the manual covers system calls, section 3 covers library functions.
+</Callout>
+
+</Section>
+
+<Section id="control" n="06" kicker="Talking to processes" title="Signals & process control">
+
+Besides creating and waiting, UNIX lets you send **signals** to processes, a way to deliver an outside event to a running program.
+
+<InfoCards set="signals" />
+
+Signals can go to a single process or to a whole **process group**. They're also how a parent learns that a child stopped (`SIGCHLD`).
+
+</Section>
+
+<Section id="users" n="07" kicker="Who may do what" title="Users & tools">
+
+If any process could send signals to any other, one user could stop everyone else's programs. So modern systems have **users**: you log in with a password, and you can only control **your own** processes. The OS divides the CPU, memory and disk among users and their processes, and keeps them apart.
+
+A special user, the **superuser** (`root`), can control *all* processes, for example to kill a runaway program another user started. With great power comes great responsibility: avoid working as root.
+
+A few tools worth knowing:
+
+- `ps` lists processes, with PIDs, states and commands.
+- `top` shows a live view of processes and their CPU and memory use.
+- `kill` and `killall` send signals by PID or by name.
+
+</Section>
+
+<Section id="recap" n="08" kicker="Check yourself" title="Recap & quiz">
+
+- `fork()` creates a **copy** of the calling process. It returns the child's PID to the parent and **0** to the child. Who runs first is up to the scheduler.
+- `wait()` lets a parent **block until a child exits**, collecting its status and reaping the zombie.
+- `exec()` **replaces the program** in the current process. Same PID, same open files, and it never returns on success.
+- Keeping `fork()` and `exec()` separate lets the shell set up **redirection** and **pipes** in between.
+- **Signals** (`kill`, Ctrl-C, Ctrl-Z) control processes, and **users** limit who may control what.
+
+<Quiz chapter="process-api" />
+
+</Section>

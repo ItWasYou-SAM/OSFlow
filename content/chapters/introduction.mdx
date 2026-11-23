@@ -1,0 +1,128 @@
+<Section id="program" n="01" kicker="Start here" title="What happens when a program runs?">
+
+At the hardware level a running program does something very simple. The processor **fetches** an instruction from memory, **decodes** it to work out what to do, and **executes** it (add two numbers, load a value, jump somewhere). Then it moves on to the next instruction, billions of times a second, until the program ends.
+
+This is the *von Neumann* model of computing. Press play below and watch the CPU run three instructions that compute `x = x + 2`.
+
+<Demo id="fetch" />
+
+That loop is the whole job of a CPU. Notice what's **missing**: nothing decides *which* program gets the CPU, nothing stops one program from scribbling over another's memory, and nothing knows how to talk to a disk. All of that is the work of the **operating system** (OS).
+
+The OS is the body of software that makes the machine **easy to use**, **shares** it between programs, and keeps them **safe** from each other. Its main tool is **virtualization**: it takes a physical resource (the processor, memory, a disk) and turns it into a more general, more powerful, easier-to-use *virtual* version of itself. That's why the OS is sometimes called a *virtual machine*.
+
+<Callout kind="key">
+How does the OS virtualize resources? What mechanisms and policies let it do this efficiently? What hardware support does it need? That is the central question of this whole course.
+</Callout>
+
+To let programs ask for these services, the OS exports a few hundred **system calls** (run a program, allocate memory, open a file). Together they form the OS's *standard library*. And because the OS manages the CPU, memory and disk on everyone's behalf, it is also a **resource manager**.
+
+This chapter is a tour. Four tiny programs show you the three big ideas the rest of OSFLOW is built around: **virtualization**, **concurrency** and **persistence**.
+
+</Section>
+
+<Section id="cpu" n="02" kicker="Virtualization, part 1" title="Virtualizing the CPU">
+
+Here is a program that does almost nothing. It spins (burns CPU time) for about a second, prints the string you passed it, and repeats forever.
+
+With one copy running, nothing interesting happens: it prints `A` every second. Now set **Processes** to **4** and run the same program four times at once. The machine still has only **one** CPU.
+
+<Demo id="cpu" />
+
+Every process prints, and every process thinks it has been running the whole time. The OS, with some help from the hardware, creates the **illusion that there are many CPUs**. It does this by running one process for a short *time slice*, then using a **timer interrupt** to take the CPU back, saving that process's registers and loading another's. This is a **context switch**.
+
+<Callout kind="tip">
+Scrub the timeline and look at the code panel. All four processes run *the same* `cpu.c`. The highlighted line always belongs to whichever process is on the CPU at that moment.
+</Callout>
+
+Two kinds of question come out of this:
+
+- **Mechanisms**: *how* do we stop a process, save its state and resume another? (Covered in *Limited Direct Execution*.)
+- **Policies**: if several processes are ready, *which* one should run next? (Covered in *Scheduling*.)
+
+Keeping mechanism and policy separate is a theme you'll see across the whole OS.
+
+</Section>
+
+<Section id="memory" n="03" kicker="Virtualization, part 2" title="Virtualizing memory">
+
+To the hardware, physical memory is just a big array of bytes. You *read* it by giving an address, and you *write* it by giving an address and some data. Programs use memory constantly: their code, their variables, their heap and stack all live there.
+
+The next program allocates one integer with `malloc`, prints its address, then increments it every second. Run two copies at once:
+
+<Demo id="mem" />
+
+Both processes print **the same address**, yet each one counts up on its own, undisturbed. If they really shared that physical memory, they would trample each other's value.
+
+What's going on: every process gets its own **private virtual address space**. Addresses a program uses are *virtual*. The OS, using hardware support, **translates** each one to a real physical location, and gives different processes different physical memory. A memory reference in one process can't affect another process, or the OS itself.
+
+<Callout kind="note" title="About the same address">
+To see identical addresses on a real Linux machine you have to turn off *address-space layout randomization* (ASLR), a security feature that places memory at random spots. Flip the switch in the demo above: the addresses change, but each process still has its own private memory.
+</Callout>
+
+Address spaces, translation, paging and TLBs are the subject of the whole *Virtualization* part of OSFLOW.
+
+</Section>
+
+<Section id="concurrency" n="04" kicker="The second big idea" title="Concurrency">
+
+The OS juggles many things at once: it runs one process, then another, handles interrupts, and so on. That creates a family of problems called **concurrency**, and they're not unique to the OS. Any **multi-threaded** program faces them too.
+
+A **thread** is like a process that *shares memory* with other threads in the same program. The next program creates two threads, and each one adds 1 to a shared `counter` variable `loops` times. With `loops = 3` the answer should obviously be 6.
+
+<Demo id="threads" />
+
+Switch the **Timing** to *Lucky* and you get the right answer. Switch to *Unlucky* or *Random* and you may get less. Real machines do this too: run the real program with `loops = 100000` and you'll get a different wrong answer almost every time.
+
+The culprit is that `counter++` is **not one step**. The compiler turns it into three instructions: **load** the counter from memory into a register, **add** one, **store** it back. If a thread is interrupted between its load and its store, the other thread's update can be overwritten and lost. Those three instructions don't run **atomically** (all at once).
+
+<Callout kind="key">
+How do we build correct concurrent programs when many threads touch the same memory? What primitives (locks, condition variables, semaphores) do we need, and what must the hardware and OS provide?
+</Callout>
+
+</Section>
+
+<Section id="persistence" n="05" kicker="The third big idea" title="Persistence">
+
+Memory forgets. When the power goes out or the system crashes, everything in DRAM is gone. To store data **persistently** we need hardware (a hard drive or SSD) and software to manage it: the **file system**.
+
+Unlike the CPU and memory, the OS doesn't give each program a private virtual disk. Users usually *want* to share files: you write code in an editor, compile it, then run the result. Here is a program that creates a file and writes `hello world` to it:
+
+<Demo id="io" />
+
+It takes three system calls: `open()` to create the file, `write()` to put data in it, and `close()` to finish. Underneath, the file system decides where on the disk the data goes, tracks it in structures like the *inode*, and sends requests to the device through its **device driver**. Your program never has to know how a disk actually works.
+
+For speed, file systems **delay writes**, keeping them in memory for a while so they can be batched. That's why `fsync()` exists. Flip **Crash before fsync()** to see what happens if the power fails in that window. Making sure a crash during writing can't wreck the disk is a deep problem, solved with techniques like **journaling** and copy-on-write.
+
+</Section>
+
+<Section id="goals" n="06" kicker="Why it's built this way" title="Design goals">
+
+So the OS **virtualizes** resources, **handles concurrency**, and **stores files persistently**. When building one, what are we aiming for? Tap a card to learn more.
+
+<DesignGoals />
+
+These goals often pull against each other. More protection can mean more overhead; more caching means better performance but more to lose in a crash. OS design is the art of balancing them.
+
+</Section>
+
+<Section id="history" n="07" kicker="How we got here" title="A brief history">
+
+Operating systems didn't appear fully formed. Each era added an idea we still rely on today.
+
+<HistoryTimeline />
+
+</Section>
+
+<Section id="recap" n="08" kicker="Check yourself" title="Recap & quiz">
+
+- The CPU only fetches, decodes and executes. The **OS** shares the machine, protects programs from each other and makes hardware easy to use.
+- **Virtualizing the CPU**: time-sharing and context switches make one CPU look like many.
+- **Virtualizing memory**: each process gets a private virtual address space mapped to different physical memory.
+- **Concurrency**: shared data plus interrupts mean non-atomic updates can be lost, so we need synchronization.
+- **Persistence**: file systems store data durably, and must handle crashes carefully.
+
+Six quick questions. Each answer links back to the section that explains it.
+
+<Quiz chapter="introduction" />
+
+</Section>

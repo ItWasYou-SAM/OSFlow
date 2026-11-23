@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-surface: var(--surface);
+}
+
+/* ───────────────────────── Tokens ───────────────────────── */
+:root {
+  --bg: #f6f7fb;
+  --ink: #15161c;
+  --muted: #5d6070;
+  --accent: #6d5dfc;
+  --accent-2: #e0559a;
+  --danger: #e5484d;
+  --success: #12a594;
+  --surface: #ffffff;
+
+  /* surfaces */
+  --panel: #ffffff;
+  --well: #eef0f5;
+  --line: rgba(15, 18, 35, 0.09);
+  --line-strong: rgba(15, 18, 35, 0.16);
+  --shadow: 0 1px 2px rgba(15, 18, 35, 0.06), 0 8px 24px -12px rgba(15, 18, 35, 0.12);
+
+  /* glass */
+  --glass-fill: rgba(255, 255, 255, 0.7);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+
+  /* code */
+  --code-bg: #ffffff;
+  --code-hl: rgba(109, 93, 252, 0.1);
+  --code-gutter: #a3a6b6;
+
+  /* terminal */
+  --term-bg: #0d0e12;
+  --term-ink: #d9dcf0;
+
+  /* process / thread colors */
+  --p0: #a78bfa;
+  --p1: #f9a8d4;
+  --p2: #5eead4;
+  --p3: #fcd34d;
+  --clay-ink: #17152e;
+}
+
+.dark {
+  --bg: #000000;
+  --ink: #ededf2;
+  --muted: #8b8d9c;
+  --accent: #9b8cff;
+  --accent-2: #ff7ab8;
+  --danger: #ff6b70;
+  --success: #3ddbc6;
+  --surface: #0b0b0e;
+
+  --panel: #0e0e12;
+  --well: #070709;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px -16px rgba(0, 0, 0, 0.9);
+
+  --glass-fill: rgba(255, 255, 255, 0.03);
+  --glass-strong: rgba(10, 10, 13, 0.78);
+
+  --code-bg: #08080b;
+  --code-hl: rgba(155, 140, 255, 0.14);
+  --code-gutter: #44465a;
+
+  --term-bg: #050507;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 35%, transparent);
+}
+
+/* ───────────────────────── Surfaces ─────────────────────────
+   glass  – translucent containers (nav, cards, demo shell)
+   panel  – solid raised surface (CPU chip, controls)
+   well   – recessed area (demo stage, inputs)
+   tint   – flat colored chip/badge, color via --c
+   solid  – filled accent (primary actions, active states), color via --c
+   clay   – reserved for processes & threads only                       */
+@layer components {
+  .glass {
+    background: var(--glass-fill);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+  }
+  .glass-strong {
+    background: var(--glass-strong);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+  }
+
+  /* Former neumorphic classes, now flat: raised control + recessed well */
+  .neu {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .neu:hover:not(:disabled) {
+    border-color: var(--line-strong);
+  }
+  .neu-inset {
+    background: var(--well);
+    border: 1px solid var(--line);
+  }
+
+  .tint {
+    --c: var(--accent);
+    background: color-mix(in oklab, var(--c) 15%, transparent);
+    color: color-mix(in oklab, var(--c) 60%, var(--ink));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--c) 32%, transparent);
+  }
+  .solid {
+    --c: var(--accent);
+    background: var(--c);
+    color: var(--clay-ink);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  /* Clay: soft, slightly raised token for processes and threads. */
+  .clay {
+    --c: var(--p0);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--c) 82%, white) 0%, var(--c) 100%);
+    color: var(--clay-ink);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -3px 6px color-mix(in oklab, var(--c) 75%, black),
+      0 6px 14px -6px color-mix(in oklab, var(--c) 60%, transparent);
+  }
+
+  .text-gradient {
+    background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 60%, #f6a94b 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* ───────────────────────── Code tokens (dual theme) ───────────────────────── */
+.tok {
+  color: var(--tl);
+}
+.dark .tok {
+  color: var(--td);
+}
+
+/* ───────────────────────── Prose ─────────────────────────
+   Only direct children of .prose-os are styled, so demos, callouts and
+   quizzes embedded in a chapter keep their own look. */
+.prose-os {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: color-mix(in oklab, var(--ink) 88%, var(--muted));
+}
+.prose-os > * + * {
+  margin-top: 1.1em;
+}
+.prose-os > p,
+.prose-os > ul,
+.prose-os > ol {
+  max-width: 68ch;
+}
+.prose-os > h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 2em;
+}
+.prose-os strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+.prose-os > ul > li {
+  position: relative;
+  padding-left: 1.5em;
+}
+.prose-os > ul > li + li {
+  margin-top: 0.4em;
+}
+.prose-os > ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.25em;
+  top: 0.7em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.prose-os > ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+.prose-os a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.prose-os :where(p, li) > code,
+.inline-code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.12em 0.4em;
+  border-radius: 0.4em;
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  color: color-mix(in oklab, var(--accent) 70%, var(--ink));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Thin custom scrollbars inside panels */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted) 40%, transparent) transparent;
+}
+
+/* Fenced code blocks in chapter prose */
+.prose-os > pre {
+  max-width: 68ch;
+  overflow-x: auto;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  line-height: 1.6;
+  color: var(--ink);
+}
