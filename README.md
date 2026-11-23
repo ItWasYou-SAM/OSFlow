@@ -18,7 +18,6 @@
 
 <p align="center">
   <a href="#-quick-start">Quick start</a> ·
-  <a href="#-chapters">Chapters</a> ·
   <a href="#-features">Features</a> ·
   <a href="#-how-it-works">How it works</a> ·
   <a href="#-contributing">Contributing</a>
@@ -42,55 +41,6 @@ OS textbooks show code and describe what happens, but you have to *picture the m
     <td width="50%" align="center"><img src="docs/assets/demo-fork.gif" alt="fork and wait demo" /><br/><sub><b>fork() + wait():</b> parent <kbd>P</kbd> and child <kbd>C</kbd> tracked in the code</sub></td>
   </tr>
 </table>
-
-## 📚 Chapters
-
-Chapters follow the OSTEP order, grouped into six stages. **✅ Live** chapters are interactive today.
-
-| # | Chapter | OSTEP | Status |
-|:-:|---|:-:|:-:|
-| | 🧱 **Foundations** | | |
-| 1 | **Introduction to OS** | 2 | ✅ Live |
-| 2 | **The Process** | 4 | ✅ Live |
-| 3 | **Process API** | 5 | ✅ Live |
-| | ⚙️ **CPU Virtualization** | | |
-| 4 | Limited Direct Execution | 6 | 🔜 Soon |
-| 5 | Scheduling Basics | 7 | 🔜 Soon |
-| 6 | Multi-Level Feedback Queue | 8 | 🔜 Soon |
-| 7 | Proportional Share | 9 | 🗓️ Planned |
-| 8 | Multiprocessor Scheduling <sub>optional</sub> | 10 | 🗓️ Planned |
-| | 🧠 **Memory Virtualization** | | |
-| 9 | Address Spaces | 13 | 🔜 Soon |
-| 10 | Memory API | 14 | 🗓️ Planned |
-| 11 | Address Translation | 15 | 🔜 Soon |
-| 12 | Segmentation | 16 | 🗓️ Planned |
-| 13 | Free-Space Management | 17 | 🗓️ Planned |
-| 14 | Paging | 18 | 🔜 Soon |
-| 15 | TLBs | 19 | 🔜 Soon |
-| 16 | Smaller Page Tables | 20 | 🗓️ Planned |
-| 17 | Swapping | 21–22 | 🗓️ Planned |
-| | 🧵 **Concurrency** | | |
-| 18 | Threads | 26 | 🔜 Soon |
-| 19 | Thread API | 27 | 🗓️ Planned |
-| 20 | Locks | 28 | 🔜 Soon |
-| 21 | Locked Data Structures | 29 | 🗓️ Planned |
-| 22 | Condition Variables | 30 | 🔜 Soon |
-| 23 | Semaphores | 31 | 🔜 Soon |
-| 24 | Concurrency Bugs | 32 | 🔜 Soon |
-| 25 | Event-based Concurrency <sub>optional</sub> | 33 | 🗓️ Planned |
-| | 💾 **Persistence** | | |
-| 26 | I/O Devices | 36 | 🔜 Soon |
-| 27 | Hard Disk Drives | 37 | 🔜 Soon |
-| 28 | RAID <sub>optional</sub> | 38 | 🗓️ Planned |
-| 29 | Files and Directories | 39 | 🔜 Soon |
-| 30 | File System Implementation | 40 | 🔜 Soon |
-| 31 | Fast File System <sub>optional</sub> | 41 | 🗓️ Planned |
-| 32 | Crash Consistency | 42 | 🔜 Soon |
-| 33 | Log-structured FS <sub>optional</sub> | 43 | 🗓️ Planned |
-| 34 | Flash-based SSDs <sub>optional</sub> | 44 | 🗓️ Planned |
-| | 🌐 **Beyond the Basics** | | |
-| 35 | Distributed Systems <sub>optional</sub> | 48–50 | 🗓️ Planned |
-| 36 | Security <sub>optional</sub> | 53–57 | 🗓️ Planned |
 
 ## 🧩 Features
 
