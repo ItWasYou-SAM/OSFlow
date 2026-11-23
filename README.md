@@ -94,7 +94,7 @@ Chapters follow the OSTEP order, grouped into six stages. **✅ Live** chapters 
 
 ## 🧩 Features
 
-| | |
+| Feature | What you get |
 |---|---|
 | 🕹️ **Interactive demos** | 12 demos with options to try, such as *who runs first*, *unlucky timing* or *crash before fsync()* |
 | 🛣️ **Learning roadmap** | `/roadmap`: all 36 chapters as a roadmap.sh-style map, with details and a guide to each stage |
