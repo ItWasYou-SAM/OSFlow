@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/ui/Nav";
 import { Providers } from "@/components/ui/Providers";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const sans = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
+const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-grotesk", weight: ["500", "600", "700"], display: "swap" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", display: "swap" });
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ const themeScript = `try{var t=localStorage.getItem('osflow-theme');document.doc
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`dark ${sans.variable} ${display.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
@@ -44,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <footer className="relative mx-auto mt-24 max-w-6xl px-4 pb-12 text-sm text-muted sm:px-6">
             <div className="glass flex flex-col gap-2 rounded-3xl px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
               <p>
-                <span className="font-semibold text-ink">OSFLOW</span> · learn operating systems by watching them work.
+                <span className="font-display font-bold tracking-tight text-ink">OS<span className="text-gradient">FLOW</span></span> · learn operating systems by watching them work.
               </p>
               <p>
                 Chapter order and example programs follow{" "}

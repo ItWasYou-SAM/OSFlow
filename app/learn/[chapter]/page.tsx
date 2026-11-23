@@ -56,7 +56,7 @@ export default async function ChapterPage({ params }: Props) {
             </span>
           )}
         </div>
-        <h1 className="mt-4 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-ink sm:text-6xl">
+        <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
           {ch.title.split(" ").slice(0, -2).join(" ")} <span className="text-gradient">{ch.title.split(" ").slice(-2).join(" ")}</span>
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">{ch.summary}</p>

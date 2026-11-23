@@ -3,7 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-grotesk), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
 
   --color-ink: var(--ink);
@@ -25,6 +26,11 @@
   --danger: #e5484d;
   --success: #12a594;
   --surface: #ffffff;
+
+  /* headline colors: calm violet → cyan, deep enough for white backgrounds */
+  --title-from: #6d28d9;
+  --title-to: #0e7490;
+  --kicker: #6d28d9;
 
   /* surfaces */
   --panel: #ffffff;
@@ -64,6 +70,10 @@
   --success: #3ddbc6;
   --surface: #0b0b0e;
 
+  --title-from: #c4b5fd;
+  --title-to: #67e8f9;
+  --kicker: #a5b4fc;
+
   --panel: #0e0e12;
   --well: #070709;
   --line: rgba(255, 255, 255, 0.08);
@@ -94,6 +104,19 @@ body {
   color: var(--ink);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Headings use the display face with tighter tracking. */
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+}
+h1 {
+  letter-spacing: -0.035em;
 }
 
 ::selection {
@@ -169,7 +192,7 @@ body {
   }
 
   .text-gradient {
-    background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 60%, #f6a94b 95%);
+    background: linear-gradient(95deg, var(--title-from) 0%, var(--title-to) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

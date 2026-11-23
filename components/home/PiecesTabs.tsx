@@ -92,7 +92,7 @@ export function PiecesTabs() {
             <p.Mini />
           </div>
           <div className="glass flex flex-col rounded-3xl p-6">
-            <h3 className="text-2xl font-extrabold text-ink">{p.lead}</h3>
+            <h3 className="text-2xl font-bold text-ink">{p.lead}</h3>
             <p className="mt-3 leading-relaxed text-muted">{p.body}</p>
             <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.18em] text-muted">Topics in this piece</p>
             <div className="mt-2 flex flex-wrap gap-1.5">

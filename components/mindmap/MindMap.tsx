@@ -375,7 +375,7 @@ function InfoPanel({ id, onSelect, expanded, onToggle }: { id: string; onSelect:
               </span>
             ))}
           </div>
-          <h2 className="mt-2 text-2xl font-extrabold text-ink">{node.label}</h2>
+          <h2 className="mt-2 text-2xl font-bold text-ink">{node.label}</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">{node.desc}</p>
 
           {node.topic && status && (

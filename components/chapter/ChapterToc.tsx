@@ -25,7 +25,7 @@ export function ChapterToc({ sections }: { sections: Section[] }) {
 
   return (
     <>
-      <motion.div aria-hidden className="fixed inset-x-0 top-0 z-50 h-1 origin-left" style={{ scaleX: progress, background: "linear-gradient(90deg, var(--accent), var(--accent-2))" }} />
+      <motion.div aria-hidden className="fixed inset-x-0 top-0 z-50 h-1 origin-left" style={{ scaleX: progress, background: "linear-gradient(90deg, var(--title-from), var(--title-to))" }} />
       <nav aria-label="Sections in this chapter" className="glass sticky top-24 hidden rounded-3xl p-3 lg:block">
         <p className="px-2 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">In this chapter</p>
         <ol className="space-y-0.5">

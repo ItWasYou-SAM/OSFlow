@@ -17,8 +17,8 @@ export default function MindmapPage() {
     <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
       <header className="pb-8 pt-12 sm:pt-16">
         <Reveal>
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-muted">Mind map</p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-ink sm:text-6xl">
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-[var(--kicker)]">Mind map</p>
+          <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
             Every idea, <span className="text-gradient">connected</span>
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">
@@ -35,7 +35,7 @@ export default function MindmapPage() {
 
       {/* Accessible / mobile-friendly outline of the same map */}
       <section aria-labelledby="outline" className="mt-14">
-        <h2 id="outline" className="text-2xl font-extrabold tracking-tight text-ink">
+        <h2 id="outline" className="text-2xl font-bold tracking-tight text-ink">
           Outline view
         </h2>
         <p className="mt-1 text-sm text-muted">The same map as a list.</p>

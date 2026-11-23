@@ -217,7 +217,7 @@ function StageDetails({ id, onSelect }: { id: string; onSelect: (s: Sel) => void
   return (
     <div className="pr-8">
       <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Stage {STAGES.indexOf(stage) + 1}</p>
-      <h3 className="mt-1 text-xl font-extrabold text-ink">{stage.title}</h3>
+      <h3 className="mt-1 text-xl font-bold text-ink">{stage.title}</h3>
       {stage.explain.map((p, i) => (
         <p key={i} className="mt-3 text-sm leading-relaxed text-muted">
           {p}
@@ -255,7 +255,7 @@ function TopicDetails({ id, onSelect, done }: { id: string; onSelect: (s: Sel) =
         <span className="neu rounded-full px-2 py-0.5 text-[10px] font-bold uppercase text-muted">{STATUS_LABEL[status]}</span>
         {t.kind === "optional" && <span className="neu rounded-full px-2 py-0.5 text-[10px] font-bold uppercase text-muted">optional</span>}
       </div>
-      <h3 className="mt-3 text-xl font-extrabold text-ink">
+      <h3 className="mt-3 text-xl font-bold text-ink">
         <span className="mr-2 font-mono text-sm text-muted">{TOPIC_ORDER[t.id]}.</span>
         {t.title}
       </h3>

@@ -17,8 +17,8 @@ export default function RoadmapPage() {
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
       <header className="pb-4 pt-12 sm:pt-16">
         <Reveal>
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-muted">Learning roadmap</p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-black leading-[1.05] tracking-tight text-ink sm:text-6xl">
+          <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-[var(--kicker)]">Learning roadmap</p>
+          <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
             The road to <span className="text-gradient">understanding an OS</span>
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">
@@ -47,7 +47,7 @@ export default function RoadmapPage() {
       {/* Explanation of the whole map */}
       <section aria-labelledby="reading" className="mt-16">
         <Reveal>
-          <h2 id="reading" className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+          <h2 id="reading" className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             Reading the map
           </h2>
           <div className="prose-os mt-4">
@@ -72,7 +72,7 @@ export default function RoadmapPage() {
                   <span className="tint grid h-10 w-10 place-items-center rounded-xl font-mono text-sm font-black" style={{ ["--c" as string]: s.color }}>
                     {i + 1}
                   </span>
-                  <h3 className="text-xl font-extrabold text-ink">{s.title}</h3>
+                  <h3 className="text-xl font-bold text-ink">{s.title}</h3>
                 </div>
                 <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-muted">
                   {s.explain.map((p, k) => (

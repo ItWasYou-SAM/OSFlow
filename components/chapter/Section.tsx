@@ -10,8 +10,8 @@ export function Section({ id, n, title, kicker, children }: { id: string; n: str
             {n}
           </span>
           <div>
-            {kicker && <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted">{kicker}</p>}
-            <h2 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">{title}</h2>
+            {kicker && <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--kicker)]">{kicker}</p>}
+            <h2 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">{title}</h2>
           </div>
         </div>
       </Reveal>

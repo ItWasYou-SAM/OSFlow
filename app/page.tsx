@@ -35,7 +35,7 @@ export default function Home() {
             </Link>
           </Reveal>
           <Reveal delay={0.05}>
-            <h1 className="mt-5 text-5xl font-black leading-[1.02] tracking-tight text-ink sm:text-7xl">
+            <h1 className="mt-5 text-5xl font-bold leading-[1.02] tracking-tight text-ink sm:text-7xl">
               See the <span className="text-gradient">operating system</span> think.
             </h1>
           </Reveal>
@@ -82,10 +82,10 @@ export default function Home() {
       {/* Three easy pieces */}
       <section aria-labelledby="pieces" className="py-16">
         <Reveal>
-          <p id="pieces" className="text-center text-sm font-bold uppercase tracking-[0.25em] text-muted">
+          <p id="pieces" className="text-center text-sm font-bold uppercase tracking-[0.25em] text-[var(--kicker)]">
             Three easy pieces
           </p>
-          <h2 className="mx-auto mt-3 max-w-2xl text-center text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Everything an OS does fits into three ideas</h2>
+          <h2 className="mx-auto mt-3 max-w-2xl text-center text-3xl font-bold tracking-tight text-ink sm:text-4xl">Everything an OS does fits into three ideas</h2>
         </Reveal>
         <Reveal delay={0.05}>
           <div className="mt-8">
@@ -97,7 +97,7 @@ export default function Home() {
       {/* How it works */}
       <section aria-labelledby="how" className="py-10">
         <Reveal>
-          <h2 id="how" className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+          <h2 id="how" className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             How every lesson works
           </h2>
         </Reveal>
@@ -122,7 +122,7 @@ export default function Home() {
       {/* Explore: roadmap + mind map */}
       <section aria-labelledby="explore" className="py-14">
         <Reveal>
-          <h2 id="explore" className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+          <h2 id="explore" className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             See the whole subject
           </h2>
           <p className="mt-2 max-w-2xl text-muted">Two maps of the same territory: one tells you what to learn next, the other shows how everything connects.</p>
@@ -134,7 +134,7 @@ export default function Home() {
                 <RoadmapPreview />
                 <div className="mt-5 flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-extrabold text-ink">Learning roadmap</h3>
+                    <h3 className="text-xl font-bold text-ink">Learning roadmap</h3>
                     <p className="text-sm text-muted">
                       {ALL_TOPICS.length} topics in {STAGES.length} stages, in the order to learn them.
                     </p>
@@ -150,7 +150,7 @@ export default function Home() {
                 <MindmapPreview />
                 <div className="mt-5 flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-extrabold text-ink">Concept mind map</h3>
+                    <h3 className="text-xl font-bold text-ink">Concept mind map</h3>
                     <p className="text-sm text-muted">{concepts} concepts around six big ideas, each linked to its lesson.</p>
                   </div>
                   <ArrowRight className="shrink-0 text-muted" />
@@ -164,7 +164,7 @@ export default function Home() {
       {/* Learning path */}
       <section id="path" aria-labelledby="path-h" className="scroll-mt-24 py-14">
         <Reveal>
-          <h2 id="path-h" className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+          <h2 id="path-h" className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             The learning path
           </h2>
           <p className="mt-2 max-w-2xl text-muted">
@@ -181,7 +181,7 @@ export default function Home() {
               <Reveal>
                 <div className="mb-4 flex items-center gap-3">
                   <span className="h-3 w-3 rounded-full" style={{ background: part.color }} aria-hidden />
-                  <h3 className="text-xl font-extrabold text-ink">{part.title}</h3>
+                  <h3 className="text-xl font-bold text-ink">{part.title}</h3>
                   <span className="hidden text-sm text-muted sm:inline">· {part.blurb}</span>
                 </div>
               </Reveal>
